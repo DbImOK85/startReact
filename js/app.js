@@ -2,15 +2,18 @@
 var my_news = [
     {
         author: 'Саша Печкин',
-        text: 'В четчерг, четвертого числа...'
+        text: 'В четчерг, четвертого числа...',
+        textAll: 'в четыре с четвертью часа четыре чёрненьких чумазеньких чертёнка чертили чёрными чернилами чертёж.'
     },
     {
         author: 'Просто Вася',
-        text: 'Считаю, что $ должен стоить 35 UAH!'
+        text: 'Считаю, что $ должен стоить 35 UAH!',
+        textAll: 'А евро 42 UAH!'
     },
     {
         author: 'Гость',
-        text: 'Бесплатно. Скачать. Лучший сайт - http://localhost:3000'
+        text: 'Бесплатно. Скачать. Лучший сайт - http://localhost:3000',
+        textAll: 'На самом деле платно, просто нужно прочитать очень длинное лицензионное соглашение'
     }
 ];
 
@@ -18,16 +21,38 @@ let Article = React.createClass ({
     propTypes: {
         data: React.PropTypes.shape({
             author: React.PropTypes.string.isRequired,
-            text: React.PropTypes.string.isRequired
+            text: React.PropTypes.string.isRequired,
+            textAll: React.PropTypes.string.isRequired
         })
     },
+
+    getInitialState: function() {
+        return {
+            visible: true
+        }
+    },
+
+    handleReadMoreClick: function(e) {
+        e.preventDefault();
+        this.state.visible = false;
+        this.setState(this.state);
+    },
+
     render: function() {
         let author = this.props.data.author;
         let text = this.props.data.text;
+        let textAll = this.props.data.textAll;
+        let visible = this.state.visible;
+
+        console.log('render',this);
         return (
             <div className="news__article">
                 <p className="news__author">{author}</p>
                 <p className="news__text">{text}</p>
+                <a href="#"
+                    className={'news__readmore ' + (visible ? '' : 'none')}
+                    onClick={this.handleReadMoreClick}>Подробнее</a>
+                <p className={"news__text_all " + (visible ? '' : 'none')}>{textAll}</p>
             </div>
         )
     }
