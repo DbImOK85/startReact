@@ -1,0 +1,14 @@
+{
+  "name": "first-react-application",
+  "version": "1.0.0",
+  "description": "First React Application",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "DbImOK",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "express": "^4.13.4"
+  }
+}
