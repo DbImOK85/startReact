@@ -1,20 +1,52 @@
-let my_news = [
 
+var my_news = [
+    {
+        author: 'Саша Печкин',
+        text: 'В четчерг, четвертого числа...'
+    },
+    {
+        author: 'Просто Вася',
+        text: 'Считаю, что $ должен стоить 35 UAH!'
+    },
+    {
+        author: 'Гость',
+        text: 'Бесплатно. Скачать. Лучший сайт - http://localhost:3000'
+    }
 ];
 
-
+let Article = React.createClass ({
+    propTypes: {
+        data: React.PropTypes.shape({
+            author: React.PropTypes.string.isRequired,
+            text: React.PropTypes.string.isRequired
+        })
+    },
+    render: function() {
+        let author = this.props.data.author;
+        let text = this.props.data.text;
+        return (
+            <div className="news__article">
+                <p className="news__author">{author}</p>
+                <p className="news__text">{text}</p>
+            </div>
+        )
+    }
+});
 
 let News = React.createClass({
-   render: function () {
+    propTypes: {
+        data: React.PropTypes.array.isRequired
+    },
+   render: function() {
        let news = this.props.data;
        let newsTemplate;
-       if (news.indexOf() !== -1) {
+       if (news) {
            newsTemplate = news.map(function(item, i){
+               console.log(item);
                return (
                    <div key={i}>
-                   <p className="news__author">{item.author}</p>
-               <p className="news__text">{item.text}</p>
-               </div>
+                        <Article data={item}/>
+                   </div>
                )
 
            });
@@ -45,7 +77,7 @@ let App = React.createClass({
     render: function () {
         return (
             <div className="app">
-                I am a component of Ract! I can view the news
+                <h3>Новости</h3>
                 <News data={my_news}/>
                 <Comments />
             </div>
