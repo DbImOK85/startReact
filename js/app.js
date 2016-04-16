@@ -8,7 +8,6 @@ let News = React.createClass({
    render: function () {
        let news = this.props.data;
        let newsTemplate;
-        console.log(news.indexOf());
        if (news.indexOf() !== -1) {
            newsTemplate = news.map(function(item, i){
                return (
@@ -22,10 +21,6 @@ let News = React.createClass({
        } else {
            newsTemplate = <p className="news__empty">Новостей нет</p>
        }
-
-
-       console.log(newsTemplate);
-
        return (
            <div className="news">
            {newsTemplate}
