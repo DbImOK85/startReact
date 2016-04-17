@@ -17,6 +17,78 @@ var my_news = [
     }
 ];
 
+window.ee = new EventEmitter();
+
+let Add = React.createClass ({
+    componentDidMount: function() {
+        ReactDOM.findDOMNode(this.refs.testInput).focus();
+    },
+    getInitialState: function() {
+        return {
+            newsAuthorValue: '',
+            buttonDisable: true,
+            newsText: '',
+            inputChecked: false
+        }
+    },
+    handleInputChange: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.state.newsAuthorValue = e.target.value;
+        this.setState(this.state);
+    },
+    handleTextareaChange: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.state.newsText = e.target.value;
+        this.setState(this.state);
+    },
+    handleButtonClick: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        let newsAuthor = this.state.newsAuthorValue;
+        let news = this.state.newsText;
+        let newNews = {};
+        newNews.author = newsAuthor;
+        newNews.text = news;
+
+
+        window.ee.emit('AddNews', newNews);
+
+    },
+    handleCheckruleChecked: function() {
+        this.state.inputChecked ? this.state.inputChecked = false : this.state.inputChecked = true;
+        if (this.state.newsAuthorValue.length && this.state.newsText && this.state.inputChecked) {
+            this.state.buttonDisable = false
+        } else {
+            this.state.buttonDisable = true
+        }
+        this.setState(this.state);
+    },
+    render: function() {
+        return (
+            <div>
+                <form className="add__news">
+                    <input className='add__news_author'
+                           value={this.state.value}
+                           onChange={this.handleInputChange}
+                           placeholder="Автор"
+                           ref="testInput"/>
+                    <textarea className='add__news_text'
+                              defaultValue=''
+                              placeholder='Текст новости'
+                              ref='text' onChange={this.handleTextareaChange}></textarea>
+                    <label className='add__news_checkrule'>
+                        <input type='checkbox' defaultChecked={this.state.inputChecked} ref='checkrule' onClick={this.handleCheckruleChecked}/>Я согласен с правилами
+                    </label>
+                    <button className="add__news_btn" onClick={this.handleButtonClick} disabled={this.state.buttonDisable}>Добавить новость</button>
+                </form>
+            </div>
+        )
+    }
+});
+
 let Article = React.createClass ({
     propTypes: {
         data: React.PropTypes.shape({
@@ -44,7 +116,6 @@ let Article = React.createClass ({
         let textAll = this.props.data.textAll;
         let visible = this.state.visible;
 
-        console.log('render',this);
         return (
             <div className="news__article">
                 <p className="news__author">{author}</p>
@@ -67,7 +138,6 @@ let News = React.createClass({
        let newsTemplate;
        if (news) {
            newsTemplate = news.map(function(item, i){
-               console.log(item);
                return (
                    <div key={i}>
                         <Article data={item}/>
@@ -81,7 +151,7 @@ let News = React.createClass({
        return (
            <div className="news">
            {newsTemplate}
-                <strong className={news.indexOf() !== -1 ? '' : 'none'}>Всего новостей: {news.length}</strong>
+                <strong className={news ? '' : 'none'}>Всего новостей: {news.length}</strong>
             </div>
        )
    }
@@ -99,10 +169,23 @@ let Comments = React.createClass({
 
 
 let App = React.createClass({
+    getInitialState: function() {
+        return{
+            news: my_news
+        }
+    },
+    componentDidMount: function() {
+        let self = this;
+        window.ee.addListener('AddNews', function(newNews) {
+            self.state.news.push(newNews);
+            self.setState(self.state);
+        })
+    },
     render: function () {
         return (
             <div className="app">
                 <h3>Новости</h3>
+                <Add />
                 <News data={my_news}/>
                 <Comments />
             </div>
