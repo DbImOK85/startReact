@@ -28,7 +28,8 @@ let Add = React.createClass ({
             newsAuthorValue: '',
             buttonDisable: true,
             newsText: '',
-            inputChecked: false
+            inputChecked: false,
+            newsFullText: '...'
         }
     },
     handleInputChange: function(e) {
@@ -52,7 +53,7 @@ let Add = React.createClass ({
         let newNews = {};
         newNews.author = newsAuthor;
         newNews.text = news;
-
+        newNews.textAll = this.state.newsFullText;
 
         window.ee.emit('AddNews', newNews);
 
@@ -181,6 +182,9 @@ let App = React.createClass({
             self.setState(self.state);
         })
     },
+    componentWillUnmount: function() {
+        window.ee.removeListener('AddNews');
+    },
     render: function () {
         return (
             <div className="app">
@@ -191,7 +195,7 @@ let App = React.createClass({
             </div>
         )
     }
-})
+});
 
 
 
